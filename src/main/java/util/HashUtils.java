@@ -1,25 +1,22 @@
 package util;
 
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import objects.User;
-import org.graalvm.compiler.lir.LIRInstruction;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 public class HashUtils {
 
     static final long validTime = 2000000 * 1000;
 
-    public static String getToken(User user) throws NoSuchAlgorithmException {
+    public static String getToken(User user) throws Exception {
         long expires = new Date().getTime() + validTime;
-        return user.username + "@" + expires + "@" + genHash(user.username, expires);
+        return user.login + "@" + expires + "@" + genHash(user.login, expires);
     }
 
-    public static String getURLEncodedToken(User user) throws NoSuchAlgorithmException {
+    public static String getURLEncodedToken(User user) throws Exception {
         return URLEncoder.encode(getToken(user));
     }
 
@@ -33,15 +30,19 @@ public class HashUtils {
         try {
             String trueHash = URLDecoder.decode(genHash(data[0], expires));
             if (data[2].equals(trueHash)) return true;
-        } catch (NoSuchAlgorithmException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
     }
 
-    private static String genHash(String username, long expires) throws NoSuchAlgorithmException {
+    private static String genHash(String username, long expires) throws Exception {
+        return URLEncoder.encode(new String(encode(username + expires + "techno salt")));
+    }
+
+    public static byte[] encode(String target) throws Exception {
         MessageDigest sha512 = MessageDigest.getInstance("sha-512");
-        return URLEncoder.encode(Base64.encode(sha512.digest((username + expires + "techno salt")
+        return sha512.digest((target)
                 .replace(" ", "g")
                 .replace("!", "A")
                 .replace("*", "B")
@@ -61,7 +62,7 @@ public class HashUtils {
                 .replace("#", "P")
                 .replace("[", "Q")
                 .replace("]", "R")
-                .getBytes())));
+                .getBytes());
     }
 
 }

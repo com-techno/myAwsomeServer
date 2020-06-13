@@ -1,13 +1,18 @@
 package objects;
 
-public class User {
-    public String username;
-    public String passHash;
+import java.util.Arrays;
 
-    public User(String username, String passHash) throws Exception {
+public class User {
+    public String login;
+    public String passHash;
+    public String email;
+    public int admin;
+
+    public User(String username, String passHash, String email) throws Exception {
         if (username == null || passHash == null) throw new Exception("Form is incomplete");
-        this.username = username;
+        this.login = username;
         this.passHash = passHash;
+        this.email = email;
     }
 
     @Override
@@ -15,7 +20,7 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return this.username.equals(user.username) &&
+        return this.login.equals(user.login) &&
                 this.passHash.equals(user.passHash);
     }
 

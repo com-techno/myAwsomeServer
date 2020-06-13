@@ -1,19 +1,16 @@
 package objects.forms;
 
-public class NewCommentForm {
+public class DeleteSongForm {
+
     int articleId;
-    String author;
-    String body;
+    String userId;
+
 
     public int getArticleId() {
         return articleId;
     }
 
     public String getAuthor() {
-        return author;
-    }
-
-    public String getBody() {
-        return body;
+        return userId;
     }
 }

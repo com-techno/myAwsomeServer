@@ -1,10 +1,10 @@
 package objects.forms;
 
-public class NewArticleForm {
+public class NewSongForm {
 
     String author;
     String title;
-    String body;
+    String text;
     String icon;
 
     public String getAuthor() {
@@ -15,8 +15,8 @@ public class NewArticleForm {
         return title;
     }
 
-    public String getBody() {
-        return body;
+    public String getText(){
+        return text;
     }
 
     public String getIcon() {

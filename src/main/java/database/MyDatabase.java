@@ -1,17 +1,18 @@
 package database;
 
 import objects.*;
+import objects.forms.*;
 
 import java.util.List;
 
 public interface MyDatabase {
-    void signUp(User user) throws Exception;
+    void signUp(NewUserForm newUser) throws Exception;
     String signIn(User user) throws Exception;
 
-    int addArticle(Article article) throws Exception;
-    Article getArticle(int id) throws Exception;
-    boolean deleteArticle(int id, User user);
-    List<Article> getArticles();
-    boolean addComment(int id, Comment comment);
-    boolean like(int id, int like);
+    int addArticle(NewSongForm newArticle) throws Exception;
+    List<Song> getArticles() throws Exception;
+    Song getArticle(int id) throws Exception;
+    void like(LikeForm like) throws Exception;
+
+    void deleteArticle(DeleteSongForm deleteArticle) throws Exception;
 }

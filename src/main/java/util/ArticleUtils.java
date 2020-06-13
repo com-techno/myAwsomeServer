@@ -6,46 +6,36 @@ import com.sun.net.httpserver.HttpExchange;
 import java.util.Map;
 
 import database.MyDatabase;
-import objects.Article;
-import objects.Comment;
-import objects.forms.NewArticleForm;
-import objects.forms.Token;
+import objects.forms.*;
 
 import static util.DecodeUtils.writeJson;
-import static util.StreamUtils.readStream;
 
 public class ArticleUtils {
 
-    public static void addArticle(HttpExchange exchange, Gson gson, MyDatabase database) throws Exception {
-        String json = readStream(exchange.getRequestBody());
-        Article article = new Article(gson.fromJson(json, NewArticleForm.class));
-        writeJson(exchange, "id", database.addArticle(article) + "");
-    }
-
-    public static void getArticles(HttpExchange exchange, Gson gson, MyDatabase database) throws Exception {
-        String s = exchange.getRequestURI().getQuery();
-        Map<String, String> params = DecodeUtils.paramsToMap(s);
-        boolean tokenTrue = HashUtils.checkToken(params.get("token"));
-        if (tokenTrue)
-            writeJson(exchange, gson.toJson(database.getArticles()));
-        else throw new Exception("Invalid token");
+    public static void addArticle(HttpExchange exchange, Gson gson, MyDatabase database, String json) throws Exception {
+        NewSongForm newArticle = gson.fromJson(json, NewSongForm.class);
+        writeJson(exchange, "id", database.addArticle(newArticle) + "");
     }
 
     public static void getArticle(HttpExchange exchange, Gson gson, MyDatabase database) throws Exception {
         String s = exchange.getRequestURI().getQuery();
-        Map<String, String> params = DecodeUtils.paramsToMap(s);
-        boolean tokenTrue = HashUtils.checkToken(params.get("token"));
-        if (tokenTrue)
+        Map<String, String> params = DecodeUtils.paramsToMap(s == null ? "lol=kek" : s);
+        if (params.containsKey("id"))
             writeJson(exchange, gson.toJson(database.getArticle(Integer.parseInt(params.get("id")))));
-        else throw new Exception("Invalid token");
+        else
+            writeJson(exchange, gson.toJson(database.getArticles()));
     }
 
-    public static void leaveComment(HttpExchange exchange, Gson gson, MyDatabase database) throws Exception {
-        String json = readStream(exchange.getRequestBody());
-        Comment comment = gson.fromJson(json, Comment.class);
-        Token token = gson.fromJson(json, Token.class);
-        if (HashUtils.checkToken(token.token))
-            database.addComment(comment.getArticle(), comment);
-        else throw new Exception("Invalid token");
+    public static void deleteArticle(HttpExchange exchange, Gson gson, MyDatabase database, String json) throws Exception{
+        DeleteSongForm deleteArticle = gson.fromJson(json, DeleteSongForm.class);
+        database.deleteArticle(deleteArticle);
+        writeJson(exchange, "message", "Article deleted");
     }
+
+    public static void like(HttpExchange exchange, Gson gson, MyDatabase database, String json) throws Exception {
+        LikeForm like = gson.fromJson(json, LikeForm.class);
+        database.like(like);
+        writeJson(exchange, "message", "Liked");
+    }
+
 }

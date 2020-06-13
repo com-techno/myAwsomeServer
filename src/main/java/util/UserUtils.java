@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import database.MyDatabase;
 import objects.User;
+import objects.forms.NewUserForm;
 
 import static util.DecodeUtils.writeJson;
 
@@ -11,8 +12,8 @@ import static util.DecodeUtils.writeJson;
 public class UserUtils {
 
     public static void signUp(HttpExchange exchange, Gson gson, MyDatabase database, String json) throws Exception {
-        User user = gson.fromJson(json, User.class);
-        database.signUp(user);
+        NewUserForm newUser = gson.fromJson(json, NewUserForm.class);
+        database.signUp(newUser);
         writeJson(exchange, "message", "User successfully registered");
     }
 

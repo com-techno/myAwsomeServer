@@ -2,13 +2,21 @@ package util;
 
 import com.sun.net.httpserver.HttpExchange;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
 public class DecodeUtils {
+
+    public static void writeFile(HttpExchange exchange, File file) throws IOException {
+        OutputStream outputStream = exchange.getResponseBody();
+        exchange.sendResponseHeaders(200, file.length());
+        //System.out.println(new String(new FileInputStream(file).readAllBytes()));
+        outputStream.write(new FileInputStream(file).readAllBytes());
+        outputStream.flush();
+        outputStream.close();
+    }
 
     public static void writeJson(HttpExchange exchange, String param, String msg) throws IOException {
         writeJson(exchange, "{\"" + param + "\":\"" + msg + "\"}");
